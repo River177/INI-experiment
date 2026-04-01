@@ -21,7 +21,8 @@ def main() -> None:
     tok = AutoTokenizer.from_pretrained(cfg["model"]["name_or_path"], use_fast=True)
     tok.pad_token = tok.eos_token
 
-    ds = load_dataset("json", data_files=cfg["paths"]["sft_train_jsonl"], split="train")
+    sft_train_path = cfg["paths"].get("sft_train_jsonl", cfg["paths"].get("train_jsonl"))
+    ds = load_dataset("json", data_files=sft_train_path, split="train")
     lora_cfg = LoraConfig(
         r=cfg["lora"]["r"],
         lora_alpha=cfg["lora"]["alpha"],
