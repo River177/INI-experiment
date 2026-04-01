@@ -1,4 +1,4 @@
-extends: configs/base.yaml
+extends: base.yaml
 experiment_name: sft_defense
 
 train:
