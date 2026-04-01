@@ -22,6 +22,12 @@ def load_config(path: str | Path) -> Dict[str, Any]:
     cfg = yaml.safe_load(path.read_text()) or {}
     extends = cfg.pop("extends", None)
     if extends:
-        parent = load_config((path.parent / extends).resolve())
+        extends_path = Path(extends)
+        if extends_path.is_absolute() or extends_path.parent != Path("."):
+            # Treat absolute or path-containing extends as repo-root/absolute paths.
+            parent = load_config(extends_path.resolve())
+        else:
+            # Treat simple filenames as relative to the current config file's directory.
+            parent = load_config((path.parent / extends_path).resolve())
         cfg = _deep_update(parent, cfg)
     return cfg
