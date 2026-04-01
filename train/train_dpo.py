@@ -16,9 +16,23 @@ def main() -> None:
     args = ap.parse_args()
     cfg = load_config(args.config)
 
+    # Collect optional model loading kwargs from config (e.g., torch_dtype, trust_remote_code, device_map)
+    model_kwargs = {}
+    for key in ("torch_dtype", "trust_remote_code", "device_map"):
+        if key in cfg["model"]:
+            model_kwargs[key] = cfg["model"][key]
+
     bnb_cfg = BitsAndBytesConfig(load_in_4bit=cfg["model"].get("use_4bit", True), bnb_4bit_quant_type="nf4")
-    model = AutoModelForCausalLM.from_pretrained(cfg["model"]["name_or_path"], quantization_config=bnb_cfg)
-    tok = AutoTokenizer.from_pretrained(cfg["model"]["name_or_path"], use_fast=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        cfg["model"]["name_or_path"],
+        quantization_config=bnb_cfg,
+        **model_kwargs,
+    )
+    tok = AutoTokenizer.from_pretrained(
+        cfg["model"]["name_or_path"],
+        use_fast=True,
+        **model_kwargs,
+    )
     tok.pad_token = tok.eos_token
 
     ds = load_dataset("json", data_files=cfg["paths"]["dpo_train_jsonl"], split="train")
