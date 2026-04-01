@@ -1,0 +1,16 @@
+extends: base.yaml
+experiment_name: dpo_defense
+
+dpo:
+  beta: 0.1
+  max_prompt_length: 768
+  max_length: 1024
+
+build_dpo:
+  num_candidates: 3
+  rejected_policy: "first_unsafe_or_refusal"
+
+paths:
+  dpo_train_jsonl: outputs/processed/dpo_train.jsonl
+  dpo_val_jsonl: outputs/processed/dpo_val.jsonl
+  save_dir: outputs/checkpoints/dpo
