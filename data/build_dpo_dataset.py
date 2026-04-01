@@ -29,7 +29,15 @@ def main() -> None:
     args = ap.parse_args()
 
     cfg = load_config(args.config)
-    num_candidates = int(cfg["build_dpo"].get("num_candidates", 3))
+    build_dpo_cfg = cfg.get("build_dpo", {})
+    num_candidates = int(build_dpo_cfg.get("num_candidates", 3))
+    rejected_policy = build_dpo_cfg.get("rejected_policy", "heuristic")
+    supported_policies = {"heuristic"}
+    if rejected_policy not in supported_policies:
+        raise ValueError(
+            f"Unsupported build_dpo.rejected_policy={rejected_policy!r}. "
+            f"Supported values are: {sorted(supported_policies)}."
+        )
 
     for split_name, in_path, out_path in [
         ("train", args.input_train, cfg["paths"]["dpo_train_jsonl"]),
