@@ -1,0 +1,11 @@
+extends: configs/base.yaml
+experiment_name: sft_defense
+
+train:
+  learning_rate: 1e-5
+  num_train_epochs: 1
+
+paths:
+  sft_train_jsonl: outputs/processed/sft_train.jsonl
+  sft_val_jsonl: outputs/processed/sft_val.jsonl
+  save_dir: outputs/checkpoints/sft

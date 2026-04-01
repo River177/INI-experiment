@@ -1,0 +1,18 @@
+extends: configs/base.yaml
+experiment_name: grpo_defense
+
+grpo:
+  num_generations: 4
+  kl_coef: 0.02
+  max_new_tokens: 256
+
+reward:
+  defense_weight: 1.0
+  task_weight: 1.0
+  over_refusal_weight: 1.0
+  unsafe_weight: 1.0
+
+paths:
+  grpo_train_jsonl: outputs/processed/grpo_train.jsonl
+  grpo_val_jsonl: outputs/processed/grpo_val.jsonl
+  save_dir: outputs/checkpoints/grpo
